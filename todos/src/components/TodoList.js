@@ -1,11 +1,12 @@
 import React from 'react';
+import Todo from './Todo';
 
 class TodoList extends React.Component {
   render() {
     return (
       <ul>
         {this.props.items.map(item => (
-          <li key={item.id} onClick={(e) => this.props.onClick(item)}>{item.text}</li>
+          <Todo key={item.id} completed={item.completed} onClick={(e) => this.props.onClick(item)} text={item.text} />
         ))}
       </ul>
     );
