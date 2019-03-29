@@ -1,18 +1,20 @@
-import React from 'react';
-import { withFilter } from '../contexts/FilterContext';
+import React, { useContext } from 'react';
+import { FilterContext } from '../contexts/FilterContext';
 
-const Filter = ({ filter, onFilterChange }) => {
+const Filter = () => {
+  const { filter, onFilterChange } = useContext(FilterContext);
+
   return (
-  <div>
-    <label>
-      Filter: 
-      <select value={filter} onChange={onFilterChange}>
-        <option value="all">All</option>
-        <option value="active">Active</option>
-        <option value="completed">Completed</option>
-      </select>
-    </label>
-  </div>
+    <div>
+      <label>
+        Filter: 
+        <select value={filter} onChange={onFilterChange}>
+          <option value="all">All</option>
+          <option value="active">Active</option>
+          <option value="completed">Completed</option>
+        </select>
+      </label>
+    </div>
 )}
 
-export default withFilter(Filter);
+export default Filter;

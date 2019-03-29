@@ -1,6 +1,6 @@
 import React from 'react';
 
-const FilterContext = React.createContext();
+export const FilterContext = React.createContext();
 
 export class FilterProvider extends React.Component {
   constructor(props) {
