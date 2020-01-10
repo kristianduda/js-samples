@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './components/App';
+import HelloMessage from './components/HelloMessage';
 import './index.scss';
 
 ReactDOM.render(
-  <App />,
+  <HelloMessage message="Hello, world!" />,
   document.getElementById('root')
 );
