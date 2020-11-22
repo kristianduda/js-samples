@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Todos</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://github.com/kristianduda/kd-web/releases/download/v0.3.0/kd.js"></script>
+  <script src="src/userUtils.js"></script>
+</head>
+
+<body>
+  <div id="root">
+    <h3>TODO</h3>
+    <ul>
+      <li v-for="item in visibleTodos" v-on:click="handleClick($event, item)"
+        v-bind:style="{ textDecoration: item.completed ? 'line-through' : 'none' }">
+        {{ item.text }}
+      </li>
+    </ul>
+    <button v-on:click="clear">Clear completed</button>
+    <form @submit="handleSubmit">
+      <label htmlFor="new-todo">
+        What needs to be done?
+      </label>
+      <input id="new-todo" v-model="text" />
+      <button>
+        Add #{{ items.length + 1 }}
+      </button>
+    </form>
+    <div>
+      <label>
+        Filter:
+        <select v-model="filter">
+          <option value="all">All</option>
+          <option value="active">Active</option>
+          <option value="completed">Completed</option>
+        </select>
+      </label>
+    </div>
+  </div>
+  <script>
+
+    function getVisibleTodos(todos, filter) {
+      switch (filter) {
+        case 'completed':
+          return todos.filter(t => t.completed);
+        case 'active':
+          return todos.filter(t => !t.completed);
+        default:
+          return todos;
+      }
+    }
+
+    var app = new Vue({
+      el: '#root',
+      data: {
+        items: [],
+        text: '',
+        filter: 'all'
+      },
+      computed: {
+        visibleTodos: function () {
+          return getVisibleTodos(this.items, this.filter);
+        }
+      },
+      async mounted() {
+        try {
+          const items = await userUtils.getTodos();
+          this.items = items;
+        }
+        catch (e) {
+          console.error(e);
+        }
+      },
+      methods: {
+        handleClick: async function (e, item) {
+          try {
+            const newItem = await userUtils.toggleTodo(item);
+            this.items = this.items.map(function (todo) {
+              return (todo._id === item._id) ? newItem : todo;
+            });
+          }
+          catch (e) {
+            console.error(e);
+          }
+        },
+        handleSubmit: async function (e) {
+          e.preventDefault();
+
+          try {
+            const newItem = await userUtils.addTodo(this.text);
+            this.text = '';
+            this.items = [...this.items, newItem];
+          }
+          catch (e) {
+            console.error(e);
+          }
+        },
+        clear: async function () {
+          try {
+            await userUtils.clear();
+            this.items = this.items.filter(function (todo) {
+              return todo.completed === false;
+            });
+          }
+          catch (e) {
+            console.error(e);
+          }
+        }
+      }
+    })
+
+  </script>
+</body>
+
+</html>
